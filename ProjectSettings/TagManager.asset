@@ -8,6 +8,8 @@ TagManager:
   - Area
   - Enemy
   - Bullet
+  - Collect
+  - Exp
   layers:
   - Default
   - TransparentFX

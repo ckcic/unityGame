@@ -88,7 +88,11 @@ public class Enemy : MonoBehaviour
             spriter.sortingOrder = 1;
             anim.SetBool("Dead", true);
             GameManager.instance.kill++;
-            GameManager.instance.GetExp();
+            //GameManager.instance.GetExp();
+            Dead();
+            Transform exp = GameManager.instance.pool.Get(3).transform;
+            exp.position = transform.position;
+            exp.GetComponent<Exp>().Init(1);
 
             if (GameManager.instance.isLive) 
             { 
@@ -114,9 +118,11 @@ public class Enemy : MonoBehaviour
 
     }
 
+    
     void Dead()
     {
         gameObject.SetActive(false);
         // 오브젝트 풀링을 쓰기 때문에 비활성화, 파괴하지 않음
     }
+    
 }

@@ -109,11 +109,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GetExp()
+    public void GetExp(float expValue)
     {
         if(!isLive) { return; }
 
-        exp++;
+        exp += (int)expValue;
 
         if(exp >= nextExp[Mathf.Min(level, nextExp.Length-1)]) 
         {
