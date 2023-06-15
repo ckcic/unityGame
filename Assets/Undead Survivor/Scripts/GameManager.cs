@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public PoolManager pool;
     public Player player;
     public LevelUp uiLevelUp;
+    public ChestOpen uiChestOpen;
     public Result uiResult;
     public Transform uiJoy;
     public GameObject enemyCleaner;

@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -93,7 +95,13 @@ public class Enemy : MonoBehaviour
             Transform exp = GameManager.instance.pool.Get(3).transform;
             exp.position = transform.position;
             exp.GetComponent<Exp>().Init(1);
-
+            float randomNumber = Mathf.Round(UnityEngine.Random.Range(1f, 10f) * 100) / 100f;   // 소수점 둘째 자리까지 표현
+            if (randomNumber >= 9.95f)
+            {
+                // Debug.Log("Chest Drop");
+                Transform chest = GameManager.instance.pool.Get(4).transform;
+                chest.position = transform.position;
+            }
             if (GameManager.instance.isLive) 
             { 
                 AudioManager.instance.playSfx(AudioManager.Sfx.Dead); 
