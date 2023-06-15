@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,11 +7,12 @@ public class Reposition : MonoBehaviour
     Collider2D coll;
     private void Awake()
     {
-        coll = GetComponent<Collider2D>();
+        coll = GetComponent<Collider2D>(); // オブジェクトの Collider2D コンポーネントへの参照
     }
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision) 
+    // オブジェクトが他の Collider2D とのトリガー領域から出た場合に呼び出される
     {
-        if (!collision.CompareTag("Area")) { return; }
+        if (!collision.CompareTag("Area")) { return; } // 出た領域のタグが "Area" でない場合は処理を終了
 
         Vector3 playerPos = GameManager.instance.player.transform.position;
         Vector3 myPos = transform.position;
@@ -22,8 +23,9 @@ public class Reposition : MonoBehaviour
         float diffY = Mathf.Abs(dirY);
         dirX = dirX > 0 ? 1 : -1;
         dirY = dirY > 0 ? 1 : -1;
-
-        switch(transform.tag) 
+        
+        // 相対的な位置関係に基づいて、オブジェクトを再配置
+        switch (transform.tag) 
         {
             case "Ground":
                 if (diffX > diffY)

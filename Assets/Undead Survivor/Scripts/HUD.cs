@@ -6,21 +6,21 @@ using static Cinemachine.DocumentationSortingAttribute;
 
 public class HUD : MonoBehaviour
 {
-    public enum InfoType { Exp, Level, Kill, Time, Health }
+    public enum InfoType { Exp, Level, Kill, Time, Health } // HUDが表示する情報の種類を表す列挙型
     public InfoType type;
 
-    Text myText;
-    Slider mySlider;
+    Text myText; // Level, Kill, Time
+    Slider mySlider; // Exp, Health
 
     private void Awake()
     {
-        myText = GetComponent<Text>();
-        mySlider = GetComponent<Slider>();
+        myText = GetComponent<Text>(); // テキストコンポーネントを参照
+        mySlider = GetComponent<Slider>(); // スライダーコンポーネントを参照
     }
 
     private void LateUpdate()
     {
-        switch (type)
+        switch (type) //種類によって表示する情報の処理
         {
             case InfoType.Exp:
                 float curExp = GameManager.instance.exp;
@@ -35,7 +35,6 @@ public class HUD : MonoBehaviour
                 break;
             case InfoType.Time:
                 float remainTime = GameManager.instance.maxGameTime - GameManager.instance.gameTime;
-                //float remainTime = GameManager.instance.gameTime;
 
                 int min = Mathf.FloorToInt(remainTime / 60);
                 int sec = Mathf.FloorToInt(remainTime % 60);

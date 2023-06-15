@@ -15,7 +15,7 @@ public class Item : MonoBehaviour
     Text textName;
     Text textDesc;
 
-    private void Awake()
+    private void Awake() // アイコンとテキストの参照を取得し、初期設定
     {
         icon = GetComponentsInChildren<Image>()[1];
         icon.sprite = data.itemIcon;
@@ -27,11 +27,11 @@ public class Item : MonoBehaviour
         textName.text = data.itemName;
     }
 
-    private void OnEnable()
+    private void OnEnable() // アイテムが有効になるたびに呼び出される
     {
         textLevel.text = "LV." + (level);
 
-        switch (data.itemType)
+        switch (data.itemType) // アイテムの種類によって説明のテキストを更新
         {
             case ItemData.ItemType.Melee:
             case ItemData.ItemType.Range:
@@ -48,18 +48,14 @@ public class Item : MonoBehaviour
 
     }
 
-    //private void LateUpdate()
-    //{
-    //    //textLevel.text = "LV." + (level + 1);
-    //}
 
     public void OnClick() 
     { 
-        switch(data.itemType)
+        switch(data.itemType) // アイテムの種類によって処理
         {
             case ItemData.ItemType.Melee:
-            case ItemData.ItemType.Range:
-                if (level == 0)
+            case ItemData.ItemType.Range: // 武器
+                if (level == 0) // 初めてアイテム獲得したのか
                 {
                     GameObject newWeapon = new GameObject();
                     weapon = newWeapon.AddComponent<Weapon>();
@@ -79,8 +75,8 @@ public class Item : MonoBehaviour
                 level++;
                 break;
             case ItemData.ItemType.Glove:
-            case ItemData.ItemType.Shoe:
-                if (level == 0)
+            case ItemData.ItemType.Shoe: // 装備アイテム
+                if (level == 0)  // 初めてアイテム獲得したのか
                 {
                     GameObject newGear = new GameObject();
                     gear = newGear.AddComponent<Gear>();
@@ -94,12 +90,12 @@ public class Item : MonoBehaviour
 
                 level++;
                 break;
-            case ItemData.ItemType.Heal:
+            case ItemData.ItemType.Heal: // 消費アイテム
                 GameManager.instance.health = GameManager.instance.maxHealth;
                 break;
         }
 
-        if (level == data.damages.Length)
+        if (level == data.damages.Length) // 最大レベルの場合はボダンを無効化する
         {
             GetComponent<Button>().interactable = false;
         }

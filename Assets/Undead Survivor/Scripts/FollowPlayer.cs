@@ -13,7 +13,8 @@ public class FollowPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // カメラをプレイヤーを追うようにする
         rect.position = Camera.main.WorldToScreenPoint(GameManager.instance.player.transform.position);
-        // WorldToScreenPoint : 월드 상의 오브젝트 위치를 스크린 좌표로 변환
+        // WorldToScreenPoint : Unityのカメラに関連付けられたワールド座標をスクリーン座標に変換するための関数
     }
 }

@@ -23,47 +23,31 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
         scanner = GetComponent<Scanner>();
         hands = GetComponentsInChildren<Hand>(true);
-        // 비활성화된 컴포넌트를 받을 때
+        // 無効化されたコンポーネントを受け取る時
     }
 
-    private void OnEnable()
+    private void OnEnable() // オブジェクトが有効になったときに呼ばれる
     {
         speed *= Character.Speed;
         animator.runtimeAnimatorController = animCon[GameManager.instance.playerId];
     }
 
-    //void Update()
-    //{
-    //    if (!GameManager.instance.isLive) { return; }
-    //    inputVec.x = Input.GetAxisRaw("Horizontal");
-    //    inputVec.y = Input.GetAxisRaw("Vertical");
-    //}
-
     private void FixedUpdate()
     {
-        /*
-        // 1. 힘을 준다
-        //rigid.AddForce(inputVec);
-
-        // 2. 속도 제어
-        //rigid.velocity = inputVec;
-        */
-
-        // 3. 위치 이동, normalized 대각선도 크기를 같게
-        // Vector2 nextVec = inputVec.normalized * speed * Time.fixedDeltaTime;
-        // Inputsystem 에서 이미 노멀라이즈를 적용함
+        // 位置移動, normalized：対角線も同じく
+        // Inputsystemですでにnormalizedを適用済み
         if (!GameManager.instance.isLive) { return; }
         Vector2 nextVec = inputVec * speed * Time.fixedDeltaTime;
         rigid.MovePosition(rigid.position + nextVec);
     }
 
-    private void LateUpdate()
+    private void LateUpdate() // フレームの最後に呼ばれる
     {
         if (!GameManager.instance.isLive) { return; }
         animator.SetFloat("Speed", inputVec.magnitude);
-        // magnitude : 벡터의 순수한 크기
+        // magnitude : ベクターの純粋なサイズ
 
-        if (inputVec.x != 0) { 
+        if (inputVec.x != 0) { // 左の方に動くとスプライトを反転
             spriter.flipX = inputVec.x < 0;
         }
     }
@@ -73,17 +57,17 @@ public class Player : MonoBehaviour
         inputVec = value.Get<Vector2>();
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision) // プレイヤーが他のオブジェクトと衝突した場合に呼び出される。
     {
         if (!GameManager.instance.isLive) { return; }
-        // 프레임마다 이벤트가 발생하므로 딜레이를 줌
+        // フレームごとにイベントが発生するため、ディレイを増やす
         GameManager.instance.health -= Time.deltaTime * 10;
 
         if (GameManager.instance.health <= 0)
         {
             for (int i = 2; i < transform.childCount; i++)
             {
-                // GetChild : 주어진 인덱스의 자식 오브젝트를 반환하는 함수, transform이나와서 gameObject로 올라가야함
+                // GetChild : 与えられたインデックスの子オブジェクトを返す関数
                 transform.GetChild(i).gameObject.SetActive(false);
             }
 

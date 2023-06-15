@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     [Header("# Game Control")]
-    public bool isLive;
-    public float gameTime;
+    public bool isLive; // ゲームがプレイ中かどうか
+    public float gameTime; // ゲームの経過時間
     public float maxGameTime = 60 * 20f;
     [Header("# Player Info")]
     public int playerId;
@@ -17,15 +17,15 @@ public class GameManager : MonoBehaviour
     public int level;
     public int kill;
     public int exp;
-    public int[] nextExp = { 3, 5, 10, 100, 150, 210, 280, 360, 450, 600};
+    public int[] nextExp = { 3, 5, 10, 100, 150, 210, 280, 360, 450, 600}; // 次のレベルに必要な経験値の配列
     [Header("# Game Object")]
-    public PoolManager pool;
-    public Player player;
-    public LevelUp uiLevelUp;
-    public ChestOpen uiChestOpen;
-    public Result uiResult;
-    public Transform uiJoy;
-    public GameObject enemyCleaner;
+    public PoolManager pool; // オブジェクトプールを管理するPoolManagerクラスのインスタンス
+    public Player player; // プレイヤーオブジェクトの参照
+    public LevelUp uiLevelUp; // レベルアップUIの参照
+    public ChestOpen uiChestOpen; // ChestOpenUIの参照
+    public Result uiResult; // ゲーム結果UIの参照
+    public Transform uiJoy; // ジョイスティックUIの参照
+    public GameObject enemyCleaner; // 敵をクリーンアップするオブジェクトの参照
 
     private void Awake()
     {
@@ -33,12 +33,12 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
     }
 
-    public void GameStart(int id)
+    public void GameStart(int id) // キャラクターを選択する時に呼び出される。
     {
         playerId = id;
         health = maxHealth;
         uiJoy.localScale = Vector3.one;
-        player.gameObject.SetActive(true);
+        player.gameObject.SetActive(true); // 有効化する
         uiLevelUp.Select(playerId % 2);
         isLive = true;
 
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.playSfx(AudioManager.Sfx.Select);
     }
 
-    public void GameOver()
+    public void GameOver() // キャラクターが死んだ時に呼び出される。
     {
         StartCoroutine(GameOverRoutine());
     }
@@ -55,17 +55,17 @@ public class GameManager : MonoBehaviour
     {
         isLive = false;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f); // 0.5秒待機
 
-        uiResult.gameObject.SetActive(true);
+        uiResult.gameObject.SetActive(true); // 有効化する
         uiResult.Lose();
         Stop();
 
-        AudioManager.instance.playBgm(false);
+        AudioManager.instance.playBgm(false); // Bgmを停止する
         AudioManager.instance.playSfx(AudioManager.Sfx.Lose);
     }
 
-    public void GameVictory()
+    public void GameVictory() // ゲームを勝った時に呼び出される。
     {
         StartCoroutine(GameVictoryRoutine());
     }
@@ -75,20 +75,20 @@ public class GameManager : MonoBehaviour
         isLive = false;
         enemyCleaner.SetActive(true);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f); // 0.5秒待機
 
-        uiResult.gameObject.SetActive(true);
+        uiResult.gameObject.SetActive(true); // 有効化する
         uiResult.Win();
         Stop();
 
-        AudioManager.instance.playBgm(false);
+        AudioManager.instance.playBgm(false); // Bgmを停止する
         AudioManager.instance.playSfx(AudioManager.Sfx.Win);
     }
 
     public void GameRetry()
     {
         SceneManager.LoadScene(0);
-        // LoadScene : 이름 혹은 인덱스로 장면을 새롭게 부르는 함수
+        // LoadScene : 名前もしくはインデックスでシーンを新たに呼び出す関数、リセット
         Resume();
     }
 
@@ -100,10 +100,11 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (!isLive) { return; }
-            
+        // ゲームをプレイしている場合
+        
         gameTime += Time.deltaTime;
 
-        if (gameTime > maxGameTime)
+        if (gameTime > maxGameTime) // ゲームの経過時間がmaxGameTimeを超えた時、勝利する
         {
             gameTime = maxGameTime;
             GameVictory();
@@ -116,22 +117,23 @@ public class GameManager : MonoBehaviour
 
         exp += (int)expValue;
 
-        if(exp >= nextExp[Mathf.Min(level, nextExp.Length-1)]) 
+        if(exp >= nextExp[Mathf.Min(level, nextExp.Length-1)])
+        // 次のレベルアップに必要な経験値または最後の要素以上であれば
         {
-            level++;
-            exp = 0;
-            uiLevelUp.Show();
+            level++; // レベルを1つ上げる
+            exp = 0; // 0にリセット
+            uiLevelUp.Show(); // レベルアップUIを表示
         }
     }
 
-    public void Stop()
+    public void Stop() // ゲームプレイ一時停止
     {
         isLive = false;
-        // 유니티의 시각 속도(배율)
+        // timeScaleプロパティは時間の流れる速度の倍率を設定
         Time.timeScale = 0;
         uiJoy.localScale = Vector3.zero;
     }
-    public void Resume()
+    public void Resume() // ゲームプレイ再開
     {
         isLive = true;
         Time.timeScale = 1;

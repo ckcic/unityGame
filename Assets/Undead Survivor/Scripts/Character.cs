@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
+    // キャラクターの特性の情報
     public static float Speed
     {
         get { return GameManager.instance.playerId == 0 ? 1.1f: 1f; }

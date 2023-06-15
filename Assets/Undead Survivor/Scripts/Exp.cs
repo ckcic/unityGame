@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class Exp : MonoBehaviour
 {
-    public float expValue;
+    public float expValue; // 経験値の値を格納
     public Sprite[] sprites;
     public Rigidbody2D target;
 
-    public bool isCollect;
-    public bool isMerge;
+    public bool isCollect; // 経験値オブジェクトが収集状態かどうか
+    public bool isMerge; // 経験値オブジェクトがマージ状態かどうか
 
     Rigidbody2D rigid;
     Collider2D coll;
@@ -16,17 +16,18 @@ public class Exp : MonoBehaviour
 
     private void Awake()
     {
-        rigid = GetComponent<Rigidbody2D>();
-        coll = GetComponent<Collider2D>();
-        spriter = GetComponent<SpriteRenderer>();
+        rigid = GetComponent<Rigidbody2D>(); // 経験値オブジェクトのRigidbody2Dコンポーネントを参照
+        coll = GetComponent<Collider2D>(); // 経験値オブジェクトのCollider2Dコンポーネントを参照
+        spriter = GetComponent<SpriteRenderer>(); // 経験値オブジェクトのSpriteRendererコンポーネントを参照
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.CompareTag("Collect")) { return; }
-        if (!isMerge)
+        // 「Collect」タグのオブジェクトに衝突した場合
+        if (!isMerge) // 経験値オブジェクトがマージ状態でない時
         {
-            isCollect = true;
+            isCollect = true; // 経験値オブジェクトが収集状態にする
         }
     }
 
@@ -34,12 +35,12 @@ public class Exp : MonoBehaviour
     {
         switch (collision.gameObject.tag)
         {
-            case "Player":
-                isCollect = false;
-                gameObject.SetActive(false);
-                GameManager.instance.GetExp(expValue);
+            case "Player": // 経験値オブジェクトがプレイヤーと衝突した場合
+                isCollect = false; // 経験値オブジェクトの収集状態を解除
+                gameObject.SetActive(false); // 経験値オブジェクトを無効化
+                GameManager.instance.GetExp(expValue); // 経験値を上げる
                 break;
-            case "Exp":
+            case "Exp": // 経験値オブジェクトが他の経験値オブジェクト衝突した場合
                 Exp other = collision.gameObject.GetComponent<Exp>();
                 if (!other.isCollect && !isCollect && !other.isMerge && !isMerge)
                 {
@@ -47,12 +48,12 @@ public class Exp : MonoBehaviour
                     float meY = transform.position.y;
                     float otherX = other.transform.position.x;
                     float otherY = other.transform.position.y;
-                    // 아래있는 경우, 오른쪽에 있는 경우
+                    // 経験値オブジェクトが下にある場合または右にある場合
                     if (meY < otherY || meX > otherX)
                     {
-                        // 상대방 숨기기
+                        // 他のオブジェクトを無効化
                         other.Hide(transform.position);
-                        // 경험치량 증가
+                        // 経験値の値を増やす
                         expValue += other.expValue;
                     }
                 }
@@ -63,7 +64,7 @@ public class Exp : MonoBehaviour
 
     public void Hide(Vector3 targetPos)
     {
-        isMerge = true;
+        isMerge = true; // 経験値オブジェクトをマージ状態にする
         if (gameObject.activeSelf)
         {
             StartCoroutine(HideRoutine(targetPos));
@@ -76,14 +77,14 @@ public class Exp : MonoBehaviour
         while (frameCount < 10)
         {
             frameCount++;
-            if (gameObject.activeSelf)
+            if (gameObject.activeSelf) // 経験値を移動させてマージするように見せる
             {
                 transform.position = Vector3.Lerp(transform.position, targetPos, 0.5f);
             }
             yield return null;
         }
 
-        isMerge = false;
+        isMerge = false; // 経験値オブジェクトのマージ状態を解除
         if (gameObject.activeSelf)
         {
             gameObject.SetActive(false);
@@ -95,6 +96,7 @@ public class Exp : MonoBehaviour
     {
         if (!GameManager.instance.isLive) { return; }
 
+        // 経験値の値によって経験値のスプライトを変更
         if (expValue >= 10 && expValue < 50)
         {
             spriter.sprite = sprites[1];
@@ -109,8 +111,8 @@ public class Exp : MonoBehaviour
         }
 
         if (!isCollect) { return; }
+        // 経験値オブジェクトをプレイヤーの位置に向かって移動させる
         float speed = 5;
-        // GetCurrentAnimatorStateInfo : 현재 상태 정보를 가져오는 함수
         Vector2 targetPosition = GameManager.instance.player.transform.position;
         Vector2 dirVec = targetPosition - rigid.position;
         Vector2 nextVec = dirVec.normalized * speed * Time.fixedDeltaTime;
@@ -119,7 +121,7 @@ public class Exp : MonoBehaviour
     }
 
 
-    public void Init(float expValue)
+    public void Init(float expValue) // 経験値オブジェクトの初期設定
     {
         this.expValue = expValue;
     }

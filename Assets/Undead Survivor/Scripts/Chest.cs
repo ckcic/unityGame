@@ -11,7 +11,7 @@ public class Chest : MonoBehaviour
     Collider2D coll;
     SpriteRenderer spriter;
 
-    private void Awake()
+    private void Awake() // 初期化
     {
         rigid = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
@@ -21,7 +21,8 @@ public class Chest : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (!collision.CompareTag("Player")) { return; }
-        GameManager.instance.uiLevelUp.Show();
+        // プレイヤーと衝突した場合
+        GameManager.instance.uiLevelUp.Show(); // 後でChest用に変える必要がある
         gameObject.SetActive(false);
     }
 }

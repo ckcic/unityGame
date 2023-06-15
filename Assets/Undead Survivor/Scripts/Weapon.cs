@@ -15,8 +15,6 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        // 함수로 부모의 컴포넌트 가져오기
-        //player = GetComponentInParent<Player>();
         player = GameManager.instance.player;
     }
 
@@ -25,10 +23,10 @@ public class Weapon : MonoBehaviour
         if (!GameManager.instance.isLive) { return; }
         switch (id)
         {
-            case 0:
+            case 0: // 0 の場合は近距離武器、武器を回転
                 transform.Rotate(Vector3.back * speed * Time.deltaTime);
                 break;
-            case 1:
+            case 1: // 1 の場合は遠距離武器、一定間隔で発射
                 timer += Time.deltaTime;
 
                 if (timer > speed)
@@ -43,7 +41,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void LevelUp(float damage, int count)
+    public void LevelUp(float damage, int count) // 武器のレベルアップ時に呼び出される
     {
         this.damage = damage * Character.Damage;
         this.count += count;
@@ -54,9 +52,10 @@ public class Weapon : MonoBehaviour
         }
 
         player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
+        //　Gear.ApplyGear()
     }
 
-    public void Init(ItemData data)
+    public void Init(ItemData data) // 武器を初期化
     {
         // Basic Set
         name = "Weapon " + data.itemId;
@@ -97,10 +96,10 @@ public class Weapon : MonoBehaviour
         hand.gameObject.SetActive(true);
 
         player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
-        // BroadcastMessage : 특정 함수 호출을 모든 자식에게 방송하는 함수
+        // BroadcastMessage : ゲームオブジェクトまたは子オブジェクトにあるすべての MonoBehaviour を継承したクラスにある methodName 名のメソッドを呼び出します。
     }
 
-    void PlaceWeapon()
+    void PlaceWeapon() // 武器を配置
     {
         for (int i = 0; i < count; i++)
         {
@@ -118,7 +117,7 @@ public class Weapon : MonoBehaviour
 
             // bullet.localPosition = Vector3.zero;
             // bullet.localRotation = Quaternion.identity;
-            bullet.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            bullet.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity); // Transformのローカル座標と回転を一度に設定
 
 
             Vector3 rotVec = Vector3.forward * 360 * i / count;
@@ -128,7 +127,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    void Fire()
+    void Fire() // プレイヤーのスキャナーで最も近いターゲットに向けて弾丸を発射
     {
         if (!player.scanner.nearestTarget) { return; }
 

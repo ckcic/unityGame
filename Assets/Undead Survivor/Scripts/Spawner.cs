@@ -17,30 +17,29 @@ public class Spawner : MonoBehaviour
         levelTime = GameManager.instance.maxGameTime / spawnData.Length;
     }
 
-    void Update()
+    void Update() // フレームごとに実行
     {
-        if (!GameManager.instance.isLive) { return; }
+        if (!GameManager.instance.isLive) { return; } // ゲームがプレイしている場合のみ処理
         timer += Time.deltaTime;
         level = Mathf.Min(Mathf.FloorToInt(GameManager.instance.gameTime / levelTime), spawnData.Length - 1);
-        // FloorToInt : 소수점 아래는 버리고 Int 형으로 바꾸는 함수
-        // CeilToInt : 소수점 아래를 올리고 Int 형으로 바꾸는 함수
+        // FloorToInt : 小数点以下の値を切り捨てて最も近い整数を返す関数
+        // CeilToInt : 小数点以下の値を切り上げて最も近い整数を返す関数
 
-        if(timer > spawnData[level].spawnTime)
+        if (timer > spawnData[level].spawnTime) // spawnData の spawnTime と比較してスポーン
         {
             timer = 0f;
             Spawn();
         }
     }
 
-    void Spawn()
+    void Spawn() // 敵キャラクターをスポーン
     {
         GameObject enemy = GameManager.instance.pool.Get(0);
-        enemy.transform.position = spawnPoint[Random.Range(1, spawnPoint.Length)].position;
-        enemy.GetComponent<Enemy>().Init(spawnData[level]);
+        enemy.transform.position = spawnPoint[Random.Range(1, spawnPoint.Length)].position; // スポーンポイントの中からランダムな位置
+        enemy.GetComponent<Enemy>().Init(spawnData[level]); // 敵キャラクターの初期化
     }
 }
 
-// 직렬화 시켜서 Inspector 상에서 보이게 하기
 [System.Serializable]
 public class SpawnData
 {
